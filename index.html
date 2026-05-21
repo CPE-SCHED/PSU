@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CPE AutoSched – Pampanga State University</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --maroon:#7B1C2E;--maroon-dk:#4A0E1A;--maroon-md:#6A1726;--maroon-lt:#A33048;--maroon-xlt:#fdf0f2;
+  --gold:#C9A84C;--gold-lt:#E8C97A;--gold-dim:rgba(201,168,76,.18);--gold-border:rgba(201,168,76,.35);
+  --white:#FFFFFF;--offwhite:#FAFAF8;--bg:#F5EDE8;--text:#1A0A08;--text-md:#4A2A1E;--text-lt:#7A5848;
+  --border:#E0CFC4;--shadow:0 2px 16px rgba(74,14,26,.10);--shadow-lg:0 8px 40px rgba(74,14,26,.20);
+  --radius:14px;--nav-h:62px;
+  --font-d:'Playfair Display',serif;--font-b:'Plus Jakarta Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-b);background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh}
+
+/* ── NAVBAR ── */
+.navbar{
+  position:fixed;top:0;left:0;right:0;z-index:999;height:var(--nav-h);
+  background:var(--maroon-dk);display:flex;align-items:center;padding:0 28px;
+  border-bottom:2px solid var(--gold-border);box-shadow:0 2px 20px rgba(0,0,0,.45);gap:0;
+}
+.nav-brand{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;flex-shrink:0}
+.nav-logo{width:34px;height:34px;border-radius:50%;object-fit:cover;border:1.5px solid var(--gold-border)}
+.nav-wordmark{display:flex;flex-direction:column;line-height:1.2}
+.nav-title{font-size:.82rem;font-weight:800;color:var(--gold-lt);letter-spacing:.04em}
+.nav-sub{font-size:.6rem;color:rgba(255,255,255,.35);letter-spacing:.02em}
+.nav-center{display:flex;align-items:center;gap:2px;margin:0 auto}
+.nav-link{
+  padding:8px 15px;border-radius:8px;font-size:.82rem;font-weight:700;
+  color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;
+  border:none;background:none;font-family:var(--font-b);white-space:nowrap;letter-spacing:.01em;
+}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,.10)}
+.nav-link.active{color:var(--gold-lt);background:rgba(201,168,76,.13);border:1px solid var(--gold-border)}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border:none;background:none;margin-left:auto}
+.nav-hamburger span{display:block;width:22px;height:2.5px;background:rgba(255,255,255,.85);border-radius:2px;transition:all .2s}
+.nav-drawer{
+  display:none;position:fixed;top:var(--nav-h);left:0;right:0;
+  background:var(--maroon-dk);z-index:998;
+  padding:14px 20px 24px;border-bottom:2px solid var(--gold-border);
+  box-shadow:0 12px 30px rgba(0,0,0,.4)
+}
+.nav-drawer.open{display:flex;flex-direction:column;gap:4px}
+.nav-drawer .nav-link{padding:13px 16px;color:rgba(255,255,255,.7);border-radius:10px;font-size:.88rem}
+
+/* ── PAGE LAYOUT ── */
+.page-body{padding-top:var(--nav-h);min-height:100vh}
+.screen{display:none;min-height:calc(100vh - var(--nav-h));flex-direction:column}
+.screen.active{display:flex}
+
+/* ── INNER LAYOUT: sidebar + content ── */
+.page-inner{display:flex;flex:1;min-height:0}
+.sidebar{
+  width:260px;flex-shrink:0;
+  background:var(--white);border-right:1px solid var(--border);
+  padding:20px 14px;overflow-y:auto;
+  position:sticky;top:var(--nav-h);height:calc(100vh - var(--nav-h));
+}
+.sidebar-title{
+  font-size:.62rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:.12em;color:var(--text-lt);margin-bottom:12px;padding:0 6px;
+}
+.sb-group{margin-bottom:18px}
+.sb-group-label{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--text-lt);opacity:.6;padding:0 6px;margin-bottom:6px}
+.sb-pill-row{display:flex;gap:6px;flex-wrap:wrap;padding:0 2px}
+.pill-btn{
+  padding:7px 15px;border-radius:40px;border:1.5px solid var(--border);background:var(--white);
+  font-family:var(--font-b);font-size:.78rem;font-weight:700;color:var(--text-lt);
+  cursor:pointer;transition:all .14s;white-space:nowrap;flex:1;text-align:center;min-width:0;
+}
+.pill-btn.on{background:var(--maroon);color:#fff;border-color:var(--maroon);box-shadow:0 2px 10px rgba(123,28,46,.25)}
+.pill-btn:hover:not(.on){border-color:var(--maroon);color:var(--maroon);background:var(--maroon-xlt)}
+.sb-select{
+  width:100%;padding:9px 32px 9px 12px;border:1.5px solid var(--border);border-radius:10px;
+  font-size:.82rem;font-family:var(--font-b);color:var(--text);background:var(--white);
+  outline:none;cursor:pointer;transition:border-color .14s;appearance:none;font-weight:600;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7'%3E%3Cpath fill='%237B1C2E' d='M1 1l4.5 4.5L10 1'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 11px center;
+}
+.sb-select:focus{border-color:var(--maroon);box-shadow:0 0 0 3px rgba(123,28,46,.08)}
+.btn-dl{
+  display:flex;align-items:center;justify-content:center;gap:7px;width:100%;
+  padding:10px 18px;background:var(--maroon);color:#fff;
+  border:none;border-radius:10px;font-family:var(--font-b);
+  font-size:.82rem;font-weight:800;cursor:pointer;transition:all .14s;
+  box-shadow:0 2px 10px rgba(123,28,46,.25);margin-top:auto;
+}
+.btn-dl:hover{background:var(--maroon-lt);box-shadow:0 4px 16px rgba(123,28,46,.35)}
+.btn-dl:disabled{opacity:.4;cursor:not-allowed}
+.sb-divider{height:1px;background:var(--border);margin:6px 0 18px}
+
+/* ── MAIN CONTENT ── */
+.main-content{flex:1;overflow:auto;padding:24px 26px;min-width:0}
+
+/* ── STATS ROW ── */
+.stats-row{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.stat{background:var(--white);border-radius:10px;padding:14px 20px;box-shadow:var(--shadow);min-width:100px;border-left:4px solid var(--gold)}
+.stat.m{border-left-color:var(--maroon)}
+.stat.g{border-left-color:#16A34A}
+.stat-v{font-family:var(--font-d);font-size:1.8rem;font-weight:700;color:var(--maroon);line-height:1}
+.stat-l{font-size:.62rem;color:var(--text-lt);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-top:3px}
+.page-heading{margin-bottom:18px}
+.page-heading-title{font-family:var(--font-d);font-size:1.45rem;font-weight:700;color:var(--maroon);margin-bottom:4px}
+.page-heading-sub{font-size:.8rem;color:var(--text-lt)}
+
+/* teacher card */
+.teacher-card{
+  background:var(--white);border-radius:12px;box-shadow:var(--shadow);
+  padding:16px 20px;margin-bottom:18px;display:flex;align-items:center;gap:14px;
+  border-left:4px solid var(--gold);
+}
+.teacher-avatar{
+  width:50px;height:50px;border-radius:50%;
+  background:var(--maroon);color:#fff;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-d);font-size:1.2rem;font-weight:700;flex-shrink:0;
+}
+.teacher-name{font-family:var(--font-d);font-size:1.05rem;font-weight:700;color:var(--maroon)}
+.teacher-dept{font-size:.74rem;color:var(--text-lt);margin-top:3px}
+
+/* ══════════════════════
+   SCHEDULE GRID
+══════════════════════ */
+.grid-wrap{background:var(--white);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;overflow-x:auto}
+.gtbl{width:100%;border-collapse:collapse;font-size:.75rem;table-layout:fixed}
+.gtbl thead th{
+  background:var(--maroon-dk);color:#fff;padding:11px 6px;font-weight:800;
+  letter-spacing:.05em;text-align:center;white-space:nowrap;font-size:.72rem;
+  border-right:1px solid rgba(255,255,255,.12);
+}
+.gtbl thead th:last-child{border-right:none}
+.tcol{
+  background:#FAF3EE;font-weight:800;color:var(--maroon);font-size:.65rem;
+  text-align:right;padding:0 10px;white-space:nowrap;min-width:120px;width:120px;
+  border-right:2px solid var(--border);vertical-align:middle;height:36px;
+}
+.gtbl tbody td{border-bottom:1px solid #EEE4DC;border-right:1px solid #EEE4DC}
+.gtbl tbody td:last-child{border-right:none}
+
+/* ══════════════════════
+   EXAM TABLE
+══════════════════════ */
+.exam-section-wrap{margin-bottom:22px;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)}
+.exam-date-banner{
+  background:var(--maroon-dk);color:var(--gold-lt);padding:12px 20px;font-weight:800;font-size:.92rem;
+  display:flex;align-items:center;gap:10px;border-bottom:2px solid var(--gold-border);
+}
+.exam-date-banner .ebadge{
+  font-size:.64rem;background:rgba(201,168,76,.18);border:1px solid var(--gold-border);
+  padding:3px 13px;border-radius:20px;font-weight:800;letter-spacing:.08em;color:var(--gold-lt);
+}
+.exam-tbl-wrap{background:var(--white);overflow:hidden;overflow-x:auto}
+.exam-tbl{width:100%;border-collapse:collapse;font-size:.83rem;min-width:700px;table-layout:fixed}
+.exam-tbl thead th{
+  background:var(--maroon);color:var(--gold-lt);padding:12px 14px;
+  font-weight:800;font-size:.7rem;text-transform:uppercase;letter-spacing:.09em;
+  text-align:center;border-right:1px solid rgba(255,255,255,.12);
+}
+.exam-tbl thead th:last-child{border-right:none}
+.exam-tbl tbody td{
+  padding:10px 14px;border-bottom:1px solid var(--border);border-right:1px solid #EEE4DC;
+  vertical-align:middle;text-align:center;
+}
+.exam-tbl tbody td:last-child{border-right:none}
+.exam-tbl tbody tr:last-child td{border-bottom:none}
+.exam-tbl tbody tr:hover td:not(.lunch-cell):not(.time-cell):not(.etd-subj){background:#fdf5f7}
+.time-cell{
+  font-weight:800;color:var(--maroon);white-space:pre-line;background:#FAF0F2;
+  border-left:5px solid var(--maroon)!important;border-right:2px solid var(--border)!important;
+  vertical-align:middle!important;text-align:center!important;
+  padding:12px 10px!important;font-size:.84rem;line-height:1.5;
+}
+.time-cell.fin-accent{border-left-color:#16A34A!important;background:#F0FAF4!important;color:#15803D!important}
+.etd-subj{
+  font-weight:800;color:var(--text);text-align:left!important;
+  padding:10px 14px 10px 18px!important;border-right:2px solid var(--border)!important;
+  background:var(--offwhite);vertical-align:middle!important;
+}
+.etd-subj strong{display:block;font-size:.85rem;color:var(--maroon);margin-bottom:3px}
+.etd-subj small{display:block;font-weight:500;font-size:.73rem;color:var(--text-lt)}
+.etd-sec{font-weight:700;color:var(--maroon-lt);font-size:.83rem}
+.etd-room{font-weight:600;color:var(--text-md);font-size:.83rem}
+.etd-instr{text-align:left!important;padding-left:18px!important;font-weight:600;color:var(--text);font-size:.82rem}
+.lunch-cell{
+  background:linear-gradient(90deg,#FFFBEA,#FFF8E0,#FFFBEA)!important;
+  color:#92400E;font-size:.76rem;font-weight:800;text-align:center!important;
+  padding:11px 14px!important;border-top:1.5px dashed #E9C46A!important;
+  border-bottom:1.5px dashed #E9C46A!important;
+  letter-spacing:.07em;text-transform:uppercase;
+}
+.exam-type-toggle{display:flex;gap:8px}
+.exam-tab-btn{padding:7px 20px;border-radius:40px;font-family:var(--font-b);font-size:.8rem;font-weight:800;cursor:pointer;transition:all .14s;border:1.5px solid;width:100%;}
+.exam-tab-btn.mid{border-color:rgba(123,28,46,.45);color:var(--maroon);background:var(--maroon-xlt)}
+.exam-tab-btn.mid.on{background:var(--maroon);border-color:var(--maroon);color:#fff;box-shadow:0 2px 12px rgba(123,28,46,.30)}
+.exam-tab-btn.fin{border-color:rgba(22,163,74,.4);color:#15803D;background:rgba(22,163,74,.06)}
+.exam-tab-btn.fin.on{background:#16A34A;border-color:#16A34A;color:#fff;box-shadow:0 2px 12px rgba(22,163,74,.28)}
+
+/* ══════════════════════════════
+   HOME
+══════════════════════════════ */
+#s-home{background:linear-gradient(165deg,var(--maroon-dk) 0%,var(--maroon) 50%,#9B2535 100%);position:relative;overflow:hidden;min-height:100vh;}
+#s-home::before{content:'';position:absolute;width:700px;height:700px;border-radius:50%;border:1px solid rgba(201,168,76,.06);top:-280px;right:-200px;pointer-events:none}
+#s-home::after{content:'';position:absolute;width:500px;height:500px;border-radius:50%;border:1px solid rgba(255,255,255,.04);bottom:-200px;left:-100px;pointer-events:none}
+.home-inner{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:calc(100vh - var(--nav-h));
+  position:relative;z-index:1;
+}
+.home-left{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:64px 48px 64px 60px;
+}
+.home-seal-wrap img{width:86px;height:86px;border-radius:50%;object-fit:cover;display:block}
+@keyframes sealPop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+.home-univ{font-size:.72rem;font-weight:800;letter-spacing:.18em;color:rgba(255,255,255,.85);text-transform:uppercase;margin-bottom:4px}
+.home-college{font-size:.67rem;color:rgba(255,255,255,.4);letter-spacing:.03em;margin-bottom:18px}
+.home-divider{width:120px;height:1.5px;background:linear-gradient(90deg,var(--gold),transparent);margin-bottom:20px}
+.home-title{font-family:var(--font-d);font-size:3rem;font-weight:900;color:#fff;line-height:1.12;letter-spacing:-.03em;margin-bottom:14px;text-shadow:0 2px 18px rgba(0,0,0,.30)}
+.home-sub{font-size:.88rem;color:rgba(255,255,255,.48);line-height:1.8;max-width:460px;margin-bottom:22px}
+.home-ay{display:inline-flex;align-items:center;gap:7px;background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold-lt);padding:6px 22px;border-radius:40px;font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.home-right{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:64px 60px 64px 24px;gap:14px;
+}
+.home-card{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+  border-radius:var(--radius);padding:24px 22px;
+  cursor:pointer;transition:all .22s;display:flex;align-items:center;gap:18px;
+}
+.home-card:hover{background:rgba(255,255,255,.15);border-color:var(--gold-border);transform:translateX(8px);box-shadow:0 10px 36px rgba(0,0,0,.28)}
+.home-card:active{transform:none}
+.home-card-icon{width:50px;height:50px;border-radius:13px;background:var(--gold-dim);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:1.45rem;flex-shrink:0}
+.home-card-body{}
+.home-card-title{font-size:1rem;font-weight:800;color:#fff;margin-bottom:4px}
+.home-card-desc{font-size:.76rem;color:rgba(255,255,255,.38);line-height:1.55}
+.home-card-arrow{margin-left:auto;color:rgba(255,255,255,.25);font-size:1.1rem;flex-shrink:0}
+
+/* ══════════════════════════════
+   ABOUT
+══════════════════════════════ */
+#s-about{background:var(--bg)}
+.about-hero{background:linear-gradient(165deg,var(--maroon-dk) 0%,var(--maroon) 70%,#9B2535 100%);padding:52px 60px 48px;position:relative;overflow:hidden}
+.about-hero::before{content:'';position:absolute;width:400px;height:400px;border-radius:50%;border:1px solid rgba(255,255,255,.05);top:-160px;right:-100px}
+.about-hero-eyebrow{font-size:.68rem;font-weight:800;letter-spacing:.2em;color:var(--gold-lt);text-transform:uppercase;margin-bottom:10px;position:relative;z-index:1;opacity:.8}
+.about-hero-title{font-family:var(--font-d);font-size:2rem;font-weight:900;color:#fff;margin-bottom:8px;position:relative;z-index:1;line-height:1.2}
+.about-hero-sub{font-size:.83rem;color:rgba(255,255,255,.4);position:relative;z-index:1}
+.about-body{max-width:820px;margin:0 auto;padding:48px 40px 72px}
+.about-section{margin-bottom:40px}
+.about-section-title{font-family:var(--font-d);font-size:1.2rem;font-weight:700;color:var(--maroon);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid transparent;border-image:linear-gradient(90deg,var(--maroon),transparent) 1}
+.about-intro{background:var(--white);border-radius:var(--radius);padding:26px 28px;box-shadow:var(--shadow);border-left:5px solid var(--maroon);font-size:.91rem;color:var(--text-md);line-height:1.95}
+.about-intro strong{color:var(--maroon);font-weight:800}
+.about-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.about-card{background:var(--white);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);border-top:3px solid transparent;transition:transform .18s,box-shadow .18s}
+.about-card:nth-child(1){border-top-color:var(--maroon)}.about-card:nth-child(2){border-top-color:var(--gold)}.about-card:nth-child(3){border-top-color:#16A34A}.about-card:nth-child(4){border-top-color:#1E5FA8}
+.about-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.about-card-icon{font-size:1.45rem;margin-bottom:9px}
+.about-card-title{font-weight:800;font-size:.9rem;margin-bottom:5px;color:var(--text)}
+.about-card-text{font-size:.78rem;color:var(--text-lt);line-height:1.65}
+.contact-info{display:flex;align-items:center;gap:12px;font-size:.86rem;color:var(--text-lt);margin-bottom:10px;padding:11px 16px;background:var(--white);border-radius:9px;box-shadow:0 1px 6px rgba(74,14,26,.07)}
+.contact-icon{font-size:1.1rem;width:26px;text-align:center;flex-shrink:0}
+
+/* ── UTILS ── */
+#printArea{display:none}
+.loading-s{text-align:center;padding:60px 20px;color:var(--text-lt)}
+.spinner{display:inline-block;width:26px;height:26px;border:3px solid var(--border);border-top-color:var(--maroon);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.anim-in{animation:fadeIn .22s ease-out}
+.empty{text-align:center;padding:60px 20px;color:var(--text-lt)}
+.empty-icon{font-size:2.2rem;margin-bottom:14px;opacity:.3}
+.empty-title{font-family:var(--font-d);font-size:1.1rem;color:var(--text);margin-bottom:6px}
+
+/* ══════════════════════════════
+   MOBILE  ≤ 768px
+══════════════════════════════ */
+@media(max-width:768px){
+  /* nav */
+  .navbar{padding:0 16px}
+  .nav-center{display:none}
+  .nav-hamburger{display:flex}
+  /* home */
+  .home-inner{grid-template-columns:1fr;min-height:auto}
+  .home-left{padding:36px 24px 0;align-items:center;text-align:center}
+  .home-left .home-divider{margin-left:auto;margin-right:auto}
+  .home-left .home-sub{text-align:center}
+  .home-title{font-size:2.1rem}
+  .home-right{padding:24px 20px 40px;gap:12px}
+  .home-card{padding:18px 16px}
+  /* sidebar → bottom drawer */
+  .page-inner{flex-direction:column}
+  .sidebar{
+    width:100%;height:auto;position:static;
+    border-right:none;border-bottom:1px solid var(--border);
+    padding:14px 16px;overflow:visible;
+  }
+  .sidebar-title{font-size:.65rem;margin-bottom:8px}
+  .sb-group{margin-bottom:12px}
+  .main-content{padding:16px}
+  /* about */
+  .about-hero{padding:32px 22px 28px}
+  .about-hero-title{font-size:1.4rem}
+  .about-body{padding:24px 16px 44px}
+  .about-cards{grid-template-columns:1fr}
+  /* exam */
+  .exam-tbl{min-width:600px}
+}
+@media(max-width:480px){
+  .home-title{font-size:1.75rem}
+  .stats-row{gap:8px}
+  .stat{padding:11px 14px;min-width:80px}
+  .stat-v{font-size:1.5rem}
+}
+@media print{
+  .navbar,.sidebar,.stats-row{display:none!important}
+  .main-content{padding:0}
+}
+
+/* ── FOOTER ── */
+.site-footer{
+  text-align:center;padding:18px 24px;font-size:.72rem;
+  color:var(--text-lt);border-top:1px solid var(--border);
+  background:var(--white);letter-spacing:.04em;
+}
+
+/* ── BACK BUTTON ── */
+.btn-back{
+  display:inline-flex;align-items:center;gap:6px;margin-bottom:16px;
+  padding:7px 16px;border-radius:8px;border:1.5px solid var(--border);
+  background:var(--white);font-family:var(--font-b);font-size:.78rem;
+  font-weight:700;color:var(--text-lt);cursor:pointer;transition:all .14s;
+}
+.btn-back:hover{border-color:var(--maroon);color:var(--maroon);background:var(--maroon-xlt);}
+
+/* ── MOBILE NAV OVERLAY ── */
+.nav-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.45);z-index:997;
+}
+.nav-overlay.open{display:block;}
+
+/* ── SKELETON LOADING ── */
+.skeleton-wrap{padding:24px;display:flex;flex-direction:column;gap:12px;}
+.skel-row{
+  height:36px;border-radius:8px;
+  background:linear-gradient(90deg,#ede3dd 25%,#f8f0eb 50%,#ede3dd 75%);
+  background-size:200% 100%;animation:shimmer 1.4s infinite;
+}
+.skel-row.short{width:65%;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ── ENHANCED SEAL RING ── */
+.home-seal-wrap{
+  width:90px;height:90px;border-radius:50%;border:2px solid var(--gold);
+  background:rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;
+  margin-bottom:24px;
+  box-shadow:0 0 0 8px rgba(201,168,76,.09),0 0 0 16px rgba(201,168,76,.04),0 10px 36px rgba(0,0,0,.40);
+  overflow:hidden;animation:sealPop .65s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="navbar">
+  <a class="nav-brand" onclick="goScreen('s-home')" href="#">
+    <img class="nav-logo" src="psu_logo.png" alt="PSU" onerror="this.style.display='none'"/>
+    <div class="nav-wordmark">
+      <div class="nav-title">CPE AutoSched</div>
+      <div class="nav-sub">Pampanga State University</div>
+    </div>
+  </a>
+  <div class="nav-center">
+    <button class="nav-link active" id="nav-home"    onclick="goScreen('s-home')">Home</button>
+    <button class="nav-link"        id="nav-class"   onclick="goClassDirect()">Class Schedules</button>
+    <button class="nav-link"        id="nav-teacher" onclick="goTeacherDirect()">Teacher Schedules</button>
+    <button class="nav-link"        id="nav-exam"    onclick="goExamDirect()">Examinations</button>
+    <button class="nav-link"        id="nav-about"   onclick="goScreen('s-about')">About</button>
+  </div>
+  <button class="nav-hamburger" id="hamburgerBtn" onclick="toggleDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ══ MOBILE DRAWER ══ -->
+<div class="nav-drawer" id="navDrawer">
+  <button class="nav-link" onclick="goScreen('s-home');closeDrawer()">🏠 Home</button>
+  <button class="nav-link" onclick="goClassDirect();closeDrawer()">📅 Class Schedules</button>
+  <button class="nav-link" onclick="goTeacherDirect();closeDrawer()">👨‍🏫 Teacher Schedules</button>
+  <button class="nav-link" onclick="goExamDirect();closeDrawer()">📝 Examinations</button>
+  <button class="nav-link" onclick="goScreen('s-about');closeDrawer()">ℹ️ About</button>
+</div>
+
+<div class="nav-overlay" id="navOverlay" onclick="closeDrawer()"></div>
+
+<div class="page-body">
+
+<!-- ══════════════════════
+     HOME
+══════════════════════ -->
+<div class="screen active" id="s-home">
+  <div class="home-inner">
+    <div class="home-left">
+      <div class="home-seal-wrap">
+        <img src="psu_logo.png" alt="PSU Seal" onerror="this.parentElement.innerHTML='<span style=\'font-family:serif;font-size:1.6rem;font-weight:900;color:#C9A84C\'>PSU</span>'"/>
+      </div>
+      <div class="home-univ">Pampanga State University</div>
+      <div class="home-college">College of Engineering and Architecture &middot; BS Computer Engineering</div>
+      <div class="home-divider"></div>
+      <div class="home-title">Automated<br>Scheduling Portal</div>
+      <div class="home-sub">Exam schedules for midterms and finals, teacher timetables, and class schedules by section and year level are all automatically generated by the CPE AutoSched system.</div>
+      <div class="home-ay">A.Y. 2025&ndash;2026</div>
+    </div>
+    <div class="home-right">
+      <div class="home-card" onclick="goClassDirect()">
+        <div class="home-card-icon">📅</div>
+        <div class="home-card-body">
+          <div class="home-card-title">Class Schedules</div>
+          <div class="home-card-desc">Browse by section &amp; year level</div>
+        </div>
+        <div class="home-card-arrow">›</div>
+      </div>
+      <div class="home-card" onclick="goTeacherDirect()">
+        <div class="home-card-icon">👨‍🏫</div>
+        <div class="home-card-body">
+          <div class="home-card-title">Teacher Schedules</div>
+          <div class="home-card-desc">Weekly teaching load per faculty</div>
+        </div>
+        <div class="home-card-arrow">›</div>
+      </div>
+      <div class="home-card" onclick="goExamDirect()">
+        <div class="home-card-icon">📝</div>
+        <div class="home-card-body">
+          <div class="home-card-title">Examinations</div>
+          <div class="home-card-desc">Midterms &amp; Finals calendar</div>
+        </div>
+        <div class="home-card-arrow">›</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════
+     CLASS SCHEDULES
+══════════════════════ -->
+<div class="screen" id="s-class">
+  <div class="page-inner">
+    <div class="sidebar">
+      <div class="sidebar-title">Filters</div>
+
+      <div class="sb-group">
+        <div class="sb-group-label">Semester</div>
+        <div class="sb-pill-row">
+          <button class="pill-btn on" data-key="cSem" data-val="1" onclick="classPick(this)">1st Sem</button>
+          <button class="pill-btn"    data-key="cSem" data-val="2" onclick="classPick(this)">2nd Sem</button>
+        </div>
+      </div>
+
+      <div class="sb-group">
+        <div class="sb-group-label">Year Level</div>
+        <div class="sb-pill-row">
+          <button class="pill-btn on" data-key="cYear" data-val="1" onclick="classPick(this)">1st</button>
+          <button class="pill-btn"    data-key="cYear" data-val="2" onclick="classPick(this)">2nd</button>
+          <button class="pill-btn"    data-key="cYear" data-val="3" onclick="classPick(this)">3rd</button>
+          <button class="pill-btn"    data-key="cYear" data-val="4" onclick="classPick(this)">4th</button>
+        </div>
+      </div>
+
+      <div class="sb-group">
+        <div class="sb-group-label">Section</div>
+        <select class="sb-select" id="selClassSection" onchange="onClassSectionChange()">
+          <option value="">— BSCpE-1A —</option>
+        </select>
+      </div>
+
+      <div class="sb-divider"></div>
+      <button class="btn-dl" id="btnClassDL" onclick="downloadClassImage()">⬇ Download Schedule</button>
+    </div>
+
+    <div class="main-content">
+      <button class="btn-back" onclick="goScreen('s-home')">← Back to Home</button>
+      <div class="page-heading">
+        <div class="page-heading-title">Class Schedule</div>
+        <div class="page-heading-sub" id="classSubText"></div>
+      </div>
+      <div class="stats-row" id="classStatsRow"></div>
+      <div id="classGridView"><div class="skeleton-wrap"><div class="skel-row"></div><div class="skel-row short"></div><div class="skel-row"></div><div class="skel-row short"></div><div class="skel-row"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════
+     TEACHER SCHEDULES
+══════════════════════ -->
+<div class="screen" id="s-teacher">
+  <div class="page-inner">
+    <div class="sidebar">
+      <div class="sidebar-title">Filters</div>
+
+      <div class="sb-group">
+        <div class="sb-group-label">Semester</div>
+        <div class="sb-pill-row">
+          <button class="pill-btn on" data-key="tSem" data-val="1" onclick="teacherPick(this)">1st Sem</button>
+          <button class="pill-btn"    data-key="tSem" data-val="2" onclick="teacherPick(this)">2nd Sem</button>
+        </div>
+      </div>
+
+      <div class="sb-group">
+        <div class="sb-group-label">Faculty</div>
+        <select class="sb-select" id="selTeacher" onchange="onTeacherChange()">
+          <option value="">— Select Teacher —</option>
+        </select>
+      </div>
+
+      <div class="sb-divider"></div>
+      <button class="btn-dl" id="btnTeacherDL" onclick="downloadTeacherImage()">⬇ Download Schedule</button>
+    </div>
+
+    <div class="main-content">
+      <button class="btn-back" onclick="goScreen('s-home')">← Back to Home</button>
+      <div id="teacherInfoCard" class="teacher-card" style="display:none">
+        <div class="teacher-avatar" id="teacherAvatar">T</div>
+        <div>
+          <div class="teacher-name" id="teacherNameDisp">—</div>
+          <div class="teacher-dept">CpE Department · Pampanga State University</div>
+        </div>
+      </div>
+      <div class="stats-row" id="teacherStatsRow"></div>
+      <div id="teacherGridView"><div class="skeleton-wrap"><div class="skel-row"></div><div class="skel-row short"></div><div class="skel-row"></div><div class="skel-row short"></div><div class="skel-row"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════
+     EXAMINATIONS
+══════════════════════ -->
+<div class="screen" id="s-exam">
+  <div class="page-inner">
+    <div class="sidebar">
+      <div class="sidebar-title">Filters</div>
+
+      <div class="sb-group">
+        <div class="sb-group-label">Semester</div>
+        <div class="sb-pill-row">
+          <button class="pill-btn on" data-key="eSem" data-val="1" onclick="examPick(this)">1st Sem</button>
+          <button class="pill-btn"    data-key="eSem" data-val="2" onclick="examPick(this)">2nd Sem</button>
+        </div>
+      </div>
+
+      <div class="sb-group">
+        <div class="sb-group-label">Exam Type</div>
+        <div class="exam-type-toggle">
+          <button class="exam-tab-btn mid on" id="etMid" onclick="switchExamType('Midterm')">Midterm</button>
+          <button class="exam-tab-btn fin"    id="etFin"  onclick="switchExamType('Final')">Finals</button>
+        </div>
+      </div>
+
+      <div class="sb-divider"></div>
+      <button class="btn-dl" id="btnExamDL" onclick="downloadExamImage()">⬇ Download Schedule</button>
+    </div>
+
+    <div class="main-content">
+      <button class="btn-back" onclick="goScreen('s-home')">← Back to Home</button>
+      <div class="page-heading">
+        <div class="page-heading-title" id="examTitleText">Midterm Examination Schedule</div>
+        <div class="page-heading-sub" id="examSubText"></div>
+      </div>
+      <div id="examTableView"><div class="skeleton-wrap"><div class="skel-row"></div><div class="skel-row short"></div><div class="skel-row"></div><div class="skel-row short"></div><div class="skel-row"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════
+     ABOUT
+══════════════════════ -->
+<div class="screen" id="s-about">
+  <div class="about-hero">
+    <div class="about-hero-eyebrow">Official Schedule Viewer</div>
+    <div class="about-hero-title">CPE AutoSched — Pampanga State University<br>BS Computer Engineering Department</div>
+    <div class="about-hero-sub">Academic Year 2025–2026</div>
+  </div>
+  <div class="about-body">
+
+    <div class="about-section">
+      <div class="about-section-title">About CPE AutoSched</div>
+      <div class="about-intro">
+        The <strong>Pampanga State University BS Computer Engineering Department's</strong> official schedule viewer is this portal. You can access each faculty member's weekly teaching load, explore class schedules by section and year level, and view exam schedules for both midterms and finals, all of which are automatically created by the <strong>CPE AutoSched</strong> system. To access the schedule, just choose your teacher, section, or year level.
+      </div>
+    </div>
+
+    <div class="about-section">
+      <div class="about-section-title">How to Use</div>
+      <div class="about-cards">
+        <div class="about-card">
+          <div class="about-card-icon">📅</div>
+          <div class="about-card-title">Class Schedules</div>
+          <div class="about-card-text">Filter by semester, year level, and section. The weekly grid shows all subjects Monday–Saturday, 7 AM–7 PM.</div>
+        </div>
+        <div class="about-card">
+          <div class="about-card-icon">👨‍🏫</div>
+          <div class="about-card-title">Teacher Schedules</div>
+          <div class="about-card-text">Pick a semester and teacher. The grid shows all assigned classes and which sections they handle.</div>
+        </div>
+        <div class="about-card">
+          <div class="about-card-icon">📝</div>
+          <div class="about-card-title">Examinations</div>
+          <div class="about-card-text">Toggle between Midterm and Finals. The table groups all sections by time slot with room and instructor info.</div>
+        </div>
+        <div class="about-card">
+          <div class="about-card-icon">⬇️</div>
+          <div class="about-card-title">Download</div>
+          <div class="about-card-text">Each page has a Download button in the sidebar to save the current schedule as a PNG image file.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <div class="about-section-title">Contact</div>
+      <div class="contact-info"><span class="contact-icon">🏫</span> College of Engineering and Architecture</div>
+      <div class="contact-info"><span class="contact-icon">🎓</span> Department of Computer Engineering</div>
+      <div class="contact-info"><span class="contact-icon">📍</span> Pampanga State University, Philippines</div>
+      <div class="contact-info"><span class="contact-icon">📅</span> Academic Year 2025–2026</div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /page-body -->
+<footer class="site-footer">
+  &copy; 2025&ndash;2026 CPE AutoSched &middot; Pampanga State University &middot; BS Computer Engineering
+</footer>
+<div id="printArea"></div>
+
+<script>
+// ── STATE ──
+const st={cSem:1,cYear:1,cSectionId:null,cSectionName:"BSCpE-1A",tSem:1,tTeacherId:null,tTeacherName:"",eSem:1,eType:"Midterm"};
+const DAY=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const AY="25-26";
+const DB={sections:null,teachers:null,classSched:null,examSched:null};
+let dbReady=false,classData=[],teacherData=[];
+
+// ── DATA LOAD ──
+async function loadAllData(){
+  try{
+    const[s,t,cs,es]=await Promise.all([
+      fetch("data/sections.json").then(r=>r.json()),
+      fetch("data/teachers.json").then(r=>r.json()),
+      fetch("data/class_schedule.json").then(r=>r.json()),
+      fetch("data/exam_schedule.json").then(r=>r.json()),
+    ]);
+    DB.sections=s;DB.teachers=t;DB.classSched=cs;DB.examSched=es;dbReady=true;
+    console.log("✅ Data loaded");
+  }catch(e){
+    console.warn("⚠️ JSON data not found:",e.message);dbReady=false;
+  }
+}
+
+// ── NAVIGATION ──
+const SCREENS=["s-home","s-class","s-teacher","s-exam","s-about"];
+const NAV_MAP={"s-home":"nav-home","s-class":"nav-class","s-teacher":"nav-teacher","s-exam":"nav-exam","s-about":"nav-about"};
+function goScreen(id){
+  SCREENS.forEach(s=>document.getElementById(s).classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0,0);
+  document.querySelectorAll(".nav-link").forEach(l=>l.classList.remove("active"));
+  const nid=NAV_MAP[id];if(nid)document.getElementById(nid)?.classList.add("active");
+  // sync mobile drawer
+  const drawerMap={"s-home":0,"s-class":1,"s-teacher":2,"s-exam":3,"s-about":4};
+  const di=drawerMap[id];
+  const drawerLinks=document.querySelectorAll("#navDrawer .nav-link");
+  drawerLinks.forEach(l=>l.classList.remove("active"));
+  if(di!==undefined&&drawerLinks[di])drawerLinks[di].classList.add("active");
+}
+function goClassDirect(){goScreen("s-class");populateClassSections();renderClassSchedule();}
+function goTeacherDirect(){goScreen("s-teacher");populateTeachers();renderTeacherSchedule();}
+function goExamDirect(){goScreen("s-exam");renderExamTable();}
+function toggleDrawer(){
+  document.getElementById("navDrawer").classList.toggle("open");
+  document.getElementById("navOverlay").classList.toggle("open");
+}
+function closeDrawer(){
+  document.getElementById("navDrawer").classList.remove("open");
+  document.getElementById("navOverlay").classList.remove("open");
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer();});
+
+// ── CLASS SCHEDULE ──
+function classPick(btn){
+  const key=btn.dataset.key,val=Number(btn.dataset.val);st[key]=val;
+  btn.closest(".sb-pill-row").querySelectorAll(".pill-btn").forEach(b=>b.classList.remove("on"));
+  btn.classList.add("on");
+  if(key==="cSem"||key==="cYear")populateClassSections();
+  renderClassSchedule();
+}
+function populateClassSections(){
+  const sel=document.getElementById("selClassSection");
+  if(!dbReady||!DB.sections){sel.innerHTML='<option value="">— BSCpE-1A —</option>';st.cSectionId=null;st.cSectionName="BSCpE-1A";return;}
+  const f=DB.sections.filter(s=>Number(s.semester)===Number(st.cSem)&&Number(s.year_level)===Number(st.cYear)&&s.academic_year===AY);
+  if(!f.length){sel.innerHTML='<option value="">— No sections —</option>';st.cSectionId=null;st.cSectionName="No sections";return;}
+  sel.innerHTML="";
+  f.forEach((s,i)=>{const o=document.createElement("option");o.value=s.id;o.textContent=s.section_name;if(i===0){st.cSectionId=s.id;st.cSectionName=s.section_name;}sel.appendChild(o);});
+  sel.value=f[0].id;
+}
+function onClassSectionChange(){
+  const sel=document.getElementById("selClassSection");
+  st.cSectionId=sel.value;st.cSectionName=sel.options[sel.selectedIndex]?.text||"";renderClassSchedule();
+}
+function renderClassSchedule(){
+  const sem=st.cSem===1?"1st Semester":"2nd Semester";
+  document.getElementById("classSubText").textContent=(st.cSectionName||"BSCpE-1A")+" · "+sem+" · AY "+AY;
+  if(!dbReady||!DB.classSched){document.getElementById("classStatsRow").innerHTML="";renderGrid([],document.getElementById("classGridView"),"student");return;}
+  try{
+    classData=DB.classSched.filter(r=>String(r.section_id)===String(st.cSectionId)&&Number(r.semester)===Number(st.cSem)&&r.academic_year===AY);
+    const subj=[...new Set(classData.map(r=>r.subject_code))].length;
+    const days=[...new Set(classData.map(r=>r.day_of_week))].length;
+    document.getElementById("classStatsRow").innerHTML=
+      `<div class="stat m"><div class="stat-v">${classData.length}</div><div class="stat-l">Classes</div></div>`+
+      `<div class="stat"><div class="stat-v">${days}</div><div class="stat-l">Days/Wk</div></div>`+
+      `<div class="stat g"><div class="stat-v">${subj}</div><div class="stat-l">Subjects</div></div>`;
+    renderGrid(classData,document.getElementById("classGridView"),"student");
+  }catch(e){document.getElementById("classGridView").innerHTML=errHtml(e.message);}
+}
+
+// ── TEACHER SCHEDULE ──
+function teacherPick(btn){
+  const key=btn.dataset.key,val=Number(btn.dataset.val);st[key]=val;
+  btn.closest(".sb-pill-row").querySelectorAll(".pill-btn").forEach(b=>b.classList.remove("on"));
+  btn.classList.add("on");
+  st.tTeacherId=null;st.tTeacherName="";
+  populateTeachers();renderTeacherSchedule();
+}
+function populateTeachers(){
+  const sel=document.getElementById("selTeacher");
+  if(!dbReady||!DB.teachers||!DB.classSched){sel.innerHTML='<option value="">— No teachers —</option>';st.tTeacherId=null;document.getElementById("teacherInfoCard").style.display="none";return;}
+  const activeSem=Number(st.tSem);
+  const activeIds=new Set(DB.classSched.filter(r=>Number(r.semester)===activeSem&&r.academic_year===AY&&r.teacher_id).map(r=>String(r.teacher_id)));
+  const semTeachers=DB.teachers.filter(t=>activeIds.has(String(t.id)));
+  if(!semTeachers.length){sel.innerHTML='<option value="">— No teachers this semester —</option>';st.tTeacherId=null;document.getElementById("teacherInfoCard").style.display="none";return;}
+  sel.innerHTML="";
+  const gp=document.createElement("optgroup");gp.label="Permanent Faculty";
+  const gt=document.createElement("optgroup");gt.label="Part-time Faculty";
+  semTeachers.forEach(t=>{const o=document.createElement("option");o.value=t.id;o.textContent=t.full_name;(t.employment_type==="Permanent"?gp:gt).appendChild(o);});
+  if(gp.children.length)sel.appendChild(gp);
+  if(gt.children.length)sel.appendChild(gt);
+  if(st.tTeacherId&&activeIds.has(String(st.tTeacherId))){sel.value=st.tTeacherId;}
+  else{sel.selectedIndex=0;const fo=sel.options[0];if(fo){st.tTeacherId=fo.value;st.tTeacherName=fo.text;}}
+}
+function onTeacherChange(){
+  const sel=document.getElementById("selTeacher");
+  st.tTeacherId=sel.value;st.tTeacherName=sel.options[sel.selectedIndex]?.text||"";renderTeacherSchedule();
+}
+function renderTeacherSchedule(){
+  const name=st.tTeacherName||"";
+  const card=document.getElementById("teacherInfoCard");
+  if(name){
+    card.style.display="flex";
+    document.getElementById("teacherAvatar").textContent=name.split(" ").filter(Boolean).map(w=>w[0]).slice(0,2).join("").toUpperCase()||"T";
+    document.getElementById("teacherNameDisp").textContent=name;
+  }else{card.style.display="none";}
+  if(!dbReady||!DB.classSched){document.getElementById("teacherStatsRow").innerHTML="";renderGrid([],document.getElementById("teacherGridView"),"teacher");return;}
+  try{
+    teacherData=DB.classSched.filter(r=>String(r.teacher_id)===String(st.tTeacherId)&&Number(r.semester)===Number(st.tSem)&&r.academic_year===AY);
+    const secs=[...new Set(teacherData.map(r=>r.section_name))].length;
+    const days=[...new Set(teacherData.map(r=>r.day_of_week))].length;
+    document.getElementById("teacherStatsRow").innerHTML=
+      `<div class="stat m"><div class="stat-v">${teacherData.length}</div><div class="stat-l">Classes</div></div>`+
+      `<div class="stat"><div class="stat-v">${days}</div><div class="stat-l">Days/Wk</div></div>`+
+      `<div class="stat g"><div class="stat-v">${secs}</div><div class="stat-l">Sections</div></div>`;
+    renderGrid(teacherData,document.getElementById("teacherGridView"),"teacher");
+  }catch(e){document.getElementById("teacherGridView").innerHTML=errHtml(e.message);}
+}
+
+// ── GRID RENDERER — FULL 7 AM–7 PM, no trimming ──
+function renderGrid(data,container,role){
+  // Build full 7:00–19:00 slots
+  const SL=[];
+  for(let h=7;h<19;h++)for(let m of[0,30])SL.push(String(h).padStart(2,"0")+":"+String(m).padStart(2,"0"));
+
+  function slotIdx(ts){
+    const v=ts.slice(0,5);
+    for(let i=SL.length-1;i>=0;i--){if(SL[i]<=v)return i;}
+    return 0;
+  }
+  function fmtTime(ts){
+    const h=parseInt(ts.slice(0,2)),m=parseInt(ts.slice(3,5));
+    const ampm=h>=12?"PM":"AM",h12=h%12||12;
+    return h12+":"+String(m).padStart(2,"0")+ampm;
+  }
+  function fmtSlot(ts){
+    const h1=parseInt(ts.slice(0,2)),m1=parseInt(ts.slice(3,5));
+    const tot=h1*60+m1+30,h2=Math.floor(tot/60),m2=tot%60;
+    const f=(h,m)=>(h%12||12)+":"+String(m).padStart(2,"0")+(h>=12?"PM":"AM");
+    return f(h1,m1)+"–"+f(h2,m2);
+  }
+  const PAL=["#7B1C2E","#1E5FA8","#2D7A4F","#C9760A","#5A4E9E","#8B3A62","#1A6E6E","#B05C0A","#A33048","#2C6E9A","#3A8F5A","#7A5C1E"];
+  const cm={};let ci=0;
+  function getColor(c){if(!cm[c])cm[c]=PAL[ci++%PAL.length];return cm[c];}
+
+  // Build grid
+  const grid=SL.map(()=>DAY.map(()=>null));
+  data.forEach(r=>{
+    const di=DAY.indexOf(r.day_of_week);if(di<0)return;
+    const ts=(r.time_start_raw||"").slice(0,5),te=(r.time_end_raw||"").slice(0,5);
+    if(!ts||!te)return;
+    const rs=slotIdx(ts),re=slotIdx(te),span=Math.max(1,re-rs);
+    if(rs>=0&&rs<SL.length&&grid[rs][di]===null){
+      grid[rs][di]={item:r,rowspan:span};
+      for(let s=rs+1;s<rs+span&&s<SL.length;s++)grid[s][di]="skip";
+    }
+  });
+
+  const RH=36;
+  const colDefs='<colgroup><col style="width:120px">'+DAY.map(()=>'<col style="min-width:110px">').join("")+"</colgroup>";
+  const dayHdr=DAY.map(d=>`<th>${d.slice(0,3).toUpperCase()}</th>`).join("");
+
+  let rows="";
+  SL.forEach((ts,si)=>{
+    const cells=DAY.map((_,di)=>{
+      const cell=grid[si][di];
+      if(cell==="skip")return"";
+      if(!cell)return`<td style="height:${RH}px;padding:0"></td>`;
+      const r=cell.item,color=getColor(r.subject_code),ht=cell.rowspan*RH-4;
+      const extra=role==="teacher"
+        ?`<div style="font-size:.55rem;opacity:.8;margin-top:1px">📚 ${r.section_name||""}</div>`
+        :`<div style="font-size:.55rem;opacity:.8;margin-top:1px">👤 ${r.teacher_short||r.teacher_name||""}</div>`;
+      const ttl=(r.descriptive_title||"").length>28?(r.descriptive_title||"").slice(0,28)+"…":(r.descriptive_title||"");
+      return`<td rowspan="${cell.rowspan}" style="padding:2px;vertical-align:top;height:${cell.rowspan*RH}px">`+
+        `<div style="background:${color};height:${ht}px;border-radius:5px;padding:5px 6px;color:#fff;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 4px rgba(0,0,0,.18)">`+
+        `<div style="font-weight:800;font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.subject_code}</div>`+
+        `<div style="font-size:.6rem;opacity:.9;line-height:1.3;margin-top:2px">${ttl}</div>`+
+        `<div style="font-size:.57rem;opacity:.75;margin-top:2px">🏫 ${r.room_name||""}</div>`+
+        extra+"</div></td>";
+    }).join("");
+    rows+=`<tr><td class="tcol" style="height:${RH}px">${fmtSlot(ts)}</td>${cells}</tr>`;
+  });
+
+  if(!rows){
+    container.innerHTML=`<div class="empty"><div class="empty-icon">📋</div><div class="empty-title">No Schedule Data</div><p style="font-size:.82rem;margin-top:6px">Add your JSON data files to the <code>data/</code> folder to populate schedules.</p></div>`;
+    return;
+  }
+
+  container.classList.add("anim-in");
+  container.innerHTML=`<div class="grid-wrap"><table class="gtbl">${colDefs}<thead><tr><th style="font-size:.65rem;text-align:left;padding-left:8px">TIME / DAY</th>${dayHdr}</tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+// ── EXAM TABLE ──
+function examPick(btn){
+  const key=btn.dataset.key,val=Number(btn.dataset.val);st[key]=val;
+  btn.closest(".sb-pill-row").querySelectorAll(".pill-btn").forEach(b=>b.classList.remove("on"));
+  btn.classList.add("on");renderExamTable();
+}
+function switchExamType(type){
+  st.eType=type;
+  document.getElementById("etMid").classList.toggle("on",type==="Midterm");
+  document.getElementById("etFin").classList.toggle("on",type==="Final");
+  renderExamTable();
+}
+function renderExamTable(){
+  const sem=st.eSem===1?"1st Semester":"2nd Semester";
+  const lbl=st.eType==="Midterm"?"Midterm":"Final";
+  document.getElementById("examTitleText").textContent=lbl+" Examination Schedule";
+  document.getElementById("examSubText").textContent=sem+" · AY "+AY+" · All Sections";
+  const container=document.getElementById("examTableView");
+  const ac=st.eType==="Midterm"?"mid-accent":"fin-accent";
+  if(!dbReady||!DB.examSched){renderBlankExam(container,ac);return;}
+  const data=DB.examSched.filter(r=>Number(r.semester)===Number(st.eSem)&&r.academic_year===AY&&r.exam_type===st.eType);
+  if(!data.length){renderBlankExam(container,ac);return;}
+  const byDate={};
+  [...data].sort((a,b)=>a.exam_date>b.exam_date?1:a.exam_date<b.exam_date?-1:0).forEach(e=>{
+    const dk=e.exam_date;
+    if(!byDate[dk])byDate[dk]={display:e.exam_date_display||e.exam_date,day:e.exam_day||"",byTime:{}};
+    const tk=e.time_start_raw||e.time_start||"00:00";
+    const sk=e.time_sort_key??parseInt(tk.split(":")[0])*60+(parseInt(tk.split(":")[1])||0);
+    const slotKey=tk+"|"+(e.subject_code||"");
+    if(!byDate[dk].byTime[slotKey])byDate[dk].byTime[slotKey]={start:e.time_start,end:e.time_end,raw:tk,sort_key:sk,subject_code:e.subject_code||"",rows:[]};
+    byDate[dk].byTime[slotKey].rows.push(e);
+  });
+  let html="";
+  Object.values(byDate).forEach(dg=>{
+    const slots=Object.values(dg.byTime).sort((a,b)=>a.sort_key-b.sort_key||(a.subject_code||"").localeCompare(b.subject_code||""));
+    html+=`<div class="exam-section-wrap"><div class="exam-date-banner">📅 ${dg.display}<span class="ebadge">${(dg.day||"").toUpperCase()}</span></div>`+
+      `<div class="exam-tbl-wrap"><table class="exam-tbl"><thead><tr><th style="width:150px">Time</th><th style="text-align:left;padding-left:18px">Subject</th><th>Year &amp; Section</th><th>Room</th><th style="text-align:left;padding-left:18px">Instructor-in-Charge</th></tr></thead><tbody>`;
+    let ld=false;
+    slots.forEach(slot=>{
+      if(!ld&&slot.sort_key>=720){ld=true;html+=`<tr><td colspan="5" class="lunch-cell">🍽 Lunch Break — 12:30 NN to 1:30 PM</td></tr>`;}
+      slot.rows.sort((a,b)=>(a.section_name||"").localeCompare(b.section_name||""));
+      const rs=slot.rows.length;
+      slot.rows.forEach((e,i)=>{
+        html+="<tr>";
+        if(i===0){
+          html+=`<td class="time-cell ${ac}" rowspan="${rs}">${e.time_start||"—"}<br>–<br>${e.time_end||"—"}</td>`;
+          html+=`<td class="etd-subj" rowspan="${rs}"><strong>${e.subject_code||"—"}</strong><small>${e.descriptive_title||""}</small></td>`;
+        }
+        html+=`<td class="etd-sec">${e.section_name||"—"}</td><td class="etd-room">${e.room_name||"—"}</td><td class="etd-instr">${e.teacher_name||"—"}</td></tr>`;
+      });
+    });
+    html+="</tbody></table></div></div>";
+  });
+  container.classList.add("anim-in");container.innerHTML=html;
+}
+function renderBlankExam(container,ac){
+  ac=ac||(st.eType==="Midterm"?"mid-accent":"fin-accent");
+  container.classList.add("anim-in");
+  container.innerHTML=`<div class="exam-section-wrap"><div class="exam-date-banner">📅 Exam Date — <span class="ebadge">—</span></div>`+
+    `<div class="exam-tbl-wrap"><table class="exam-tbl"><thead><tr><th style="width:150px">Time</th><th style="text-align:left;padding-left:18px">Subject</th><th>Year &amp; Section</th><th>Room</th><th style="text-align:left;padding-left:18px">Instructor-in-Charge</th></tr></thead><tbody>`+
+    `<tr><td class="time-cell ${ac}" rowspan="2">—</td><td class="etd-subj" rowspan="2"><strong>—</strong><small>No exam data yet</small></td><td class="etd-sec">—</td><td class="etd-room">—</td><td class="etd-instr">—</td></tr>`+
+    `<tr><td class="etd-sec">—</td><td class="etd-room">—</td><td class="etd-instr">—</td></tr>`+
+    `<tr><td colspan="5" class="lunch-cell">🍽 Lunch Break — 12:30 NN to 1:30 PM</td></tr>`+
+    `<tr><td class="time-cell ${ac}" rowspan="2">—</td><td class="etd-subj" rowspan="2"><strong>—</strong><small>Add data/exam_schedule.json to load</small></td><td class="etd-sec">—</td><td class="etd-room">—</td><td class="etd-instr">—</td></tr>`+
+    `<tr><td class="etd-sec">—</td><td class="etd-room">—</td><td class="etd-instr">—</td></tr>`+
+    "</tbody></table></div></div>";
+}
+
+// ── DOWNLOADS ──
+async function downloadGridImage(data,role,titleText,subText,btnId){
+  const btn=document.getElementById(btnId);btn.disabled=true;btn.innerHTML='<span class="spinner" style="width:14px;height:14px;border-width:2px;margin:0;display:inline-block;vertical-align:middle"></span> Generating…';
+  const pa=document.getElementById("printArea");
+  const SL=[];for(let h=7;h<19;h++)for(let m of[0,30])SL.push(String(h).padStart(2,"0")+":"+String(m).padStart(2,"0"));
+  function slotIdx(ts){const v=ts.slice(0,5);for(let i=SL.length-1;i>=0;i--){if(SL[i]<=v)return i;}return 0;}
+  function fmtSlot(ts){const h1=parseInt(ts.slice(0,2)),m1=parseInt(ts.slice(3,5));const tot=h1*60+m1+30,h2=Math.floor(tot/60),m2=tot%60;const f=(h,m)=>(h%12||12)+":"+String(m).padStart(2,"0")+(h>=12?"PM":"AM");return f(h1,m1)+"–"+f(h2,m2);}
+  const PAL=["#7B1C2E","#1E5FA8","#2D7A4F","#C9760A","#5A4E9E","#8B3A62","#1A6E6E","#B05C0A","#A33048","#2C6E9A","#3A8F5A","#7A5C1E"];
+  const cm={};let ci=0;function getColor(c){if(!cm[c])cm[c]=PAL[ci++%PAL.length];return cm[c];}
+  const grid=SL.map(()=>DAY.map(()=>null));
+  data.forEach(r=>{const di=DAY.indexOf(r.day_of_week);if(di<0)return;const ts=(r.time_start_raw||"").slice(0,5),te=(r.time_end_raw||"").slice(0,5);if(!ts||!te)return;const rs=slotIdx(ts),re=slotIdx(te),span=Math.max(1,re-rs);if(rs>=0&&rs<SL.length&&grid[rs][di]===null){grid[rs][di]={item:r,rowspan:span};for(let s=rs+1;s<rs+span&&s<SL.length;s++)grid[s][di]="skip";}});
+  const TW=130,CW=Math.floor((1280-TW)/6),RH=36;
+  const dh=DAY.map(d=>`<th style="background:#4A0E1A;color:#fff;padding:8px;font-weight:800;text-align:center;width:${CW}px;border:1px solid #bbb;font-size:10px">${d}</th>`).join("");
+  let rows="";
+  SL.forEach((ts,si)=>{
+    const cells=DAY.map((_,di)=>{
+      const cell=grid[si][di];
+      if(cell==="skip")return"";
+      if(!cell)return`<td style="height:${RH}px;border:1px solid #e8e8e8;width:${CW}px"></td>`;
+      const r=cell.item,color=getColor(r.subject_code),ht=cell.rowspan*RH-4;
+      const ex=role==="teacher"?`<div style="font-size:7px;opacity:.85">${r.section_name||""}</div>`:`<div style="font-size:7px;opacity:.85">${r.teacher_short||r.teacher_name||""}</div>`;
+      const ttl=(r.descriptive_title||"").length>26?(r.descriptive_title||"").slice(0,26)+"…":(r.descriptive_title||"");
+      return`<td rowspan="${cell.rowspan}" style="padding:2px;vertical-align:top;height:${cell.rowspan*RH}px;border:1px solid #e8e8e8;width:${CW}px"><div style="background:${color};height:${ht}px;border-radius:4px;padding:4px 5px;color:#fff;overflow:hidden;display:flex;flex-direction:column;box-sizing:border-box"><div style="font-weight:800;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.subject_code}</div><div style="font-size:8px;opacity:.9;line-height:1.25;margin-top:1px">${ttl}</div><div style="font-size:7px;opacity:.8;margin-top:1px">${r.room_name||""}</div>${ex}</div></td>`;
+    }).join("");
+    rows+=`<tr><td style="background:#FAF3EE;color:#7B1C2E;font-size:9px;font-weight:800;text-align:center;padding:2px 6px;white-space:nowrap;border:1px solid #ccc;border-right:2px solid #aaa;width:${TW}px;height:${RH}px;vertical-align:middle;line-height:1.3">${fmtSlot(ts)}</td>${cells}</tr>`;
+  });
+  // Build logo data URL for embedding in the image
+  let logoDataUrl="";
+  try{
+    const logoImg=document.querySelector('.nav-logo');
+    if(logoImg&&logoImg.src&&!logoImg.style.display){
+      const resp=await fetch(logoImg.src);
+      const blob=await resp.blob();
+      logoDataUrl=await new Promise(res=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(blob);});
+    }
+  }catch(e){}
+  const logoHtml=logoDataUrl?`<img src="${logoDataUrl}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #C9A84C;flex-shrink:0" />`:'';
+  pa.style.cssText=`display:block;position:fixed;top:-9999px;left:0;width:${TW+CW*6+36}px;background:#fff;font-family:sans-serif;padding:20px;`;
+  pa.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:12px;border-bottom:3px solid #7B1C2E;padding-bottom:12px">${logoHtml}<div style="display:flex;flex-direction:column;gap:3px;text-align:center"><div style="font-family:Georgia,serif;font-size:17px;font-weight:900;color:#7B1C2E;line-height:1.2">Pampanga State University</div><div style="font-size:12px;font-weight:800;color:#4A0E1A;letter-spacing:.04em">Department of Computer Engineering</div><div style="font-size:11px;font-weight:700;color:#1C1008;margin-top:2px">${titleText} · ${subText}</div></div></div><table style="width:100%;border-collapse:collapse;font-size:10px;table-layout:fixed"><thead><tr><th style="background:#4A0E1A;color:#fff;padding:8px;text-align:center;width:${TW}px;border:1px solid #bbb;font-size:10px">TIME / DAY</th>${dh}</tr></thead><tbody>${rows}</tbody></table>`;
+  try{
+    await new Promise(r=>setTimeout(r,120));
+    const canvas=await html2canvas(pa,{scale:2,backgroundColor:"#fff",logging:false,useCORS:true});
+    pa.style.display="none";
+    const link=document.createElement("a");
+    const safe=subText.replace(/[^\w\s\-\.]/g,"_").slice(0,50).trim().replace(/\s+/g,"_");
+    link.download=`PSU_CpE_${safe}.png`;link.href=canvas.toDataURL("image/png");link.click();
+  }catch(err){pa.style.display="none";alert("Image generation failed.");}
+  btn.disabled=false;btn.innerHTML='⬇ Download Schedule';
+}
+async function downloadClassImage(){
+  await downloadGridImage(classData,"student","Class Schedule",document.getElementById("classSubText").textContent,"btnClassDL");
+}
+async function downloadTeacherImage(){
+  const nm=document.getElementById("teacherNameDisp").textContent;
+  const sem=st.tSem===1?"1st Semester":"2nd Semester";
+  await downloadGridImage(teacherData,"teacher","Teacher Schedule",`${nm} · ${sem} · AY ${AY}`,"btnTeacherDL");
+}
+async function downloadExamImage(){
+  const btn=document.getElementById("btnExamDL");btn.disabled=true;btn.innerHTML='<span class="spinner" style="width:14px;height:14px;border-width:2px;margin:0;display:inline-block;vertical-align:middle"></span> Generating…';
+  try{
+    const canvas=await html2canvas(document.getElementById("examTableView"),{scale:2,backgroundColor:"#fff",logging:false,useCORS:true});
+    const link=document.createElement("a");
+    link.download=`PSU_CpE_Exam_${st.eType}_Sem${st.eSem}.png`;
+    link.href=canvas.toDataURL("image/png");link.click();
+  }catch(e){alert("Download failed.");}
+  btn.disabled=false;btn.innerHTML='⬇ Download Schedule';
+}
+function errHtml(msg){return`<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-title">Error</div><p style="font-size:.8rem;color:#B91C1C;margin-top:4px">${msg}</p></div>`;}
+
+// ── INIT ──
+(async()=>{await loadAllData();populateClassSections();populateTeachers();})();
+</script>
+</body>
+</html>
