@@ -1,0 +1,354 @@
+[
+  {
+    "id": 1,
+    "section_name": "BSCpE 1A",
+    "year_level": 1,
+    "semester": 1,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 186,
+    "section_name": "BSCpE 1A",
+    "year_level": 1,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 2,
+    "section_name": "BSCpE 1B",
+    "year_level": 1,
+    "semester": 1,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 187,
+    "section_name": "BSCpE 1B",
+    "year_level": 1,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 188,
+    "section_name": "BSCpE 1C",
+    "year_level": 1,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 162,
+    "section_name": "BSCpE 1C",
+    "year_level": 1,
+    "semester": 1,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 4,
+    "section_name": "BSCpE 2A",
+    "year_level": 2,
+    "semester": 1,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 189,
+    "section_name": "BSCpE 2A",
+    "year_level": 2,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 33,
+    "section_name": "BSCpE 2B",
+    "year_level": 2,
+    "semester": 1,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 190,
+    "section_name": "BSCpE 2B",
+    "year_level": 2,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 34,
+    "section_name": "BSCpE 2C",
+    "year_level": 2,
+    "semester": 1,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 191,
+    "section_name": "BSCpE 2C",
+    "year_level": 2,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 192,
+    "section_name": "BSCpE 3A",
+    "year_level": 3,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 5,
+    "section_name": "BSCpE 3A",
+    "year_level": 3,
+    "semester": 1,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 193,
+    "section_name": "BSCpE 3B",
+    "year_level": 3,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 6,
+    "section_name": "BSCpE 3B",
+    "year_level": 3,
+    "semester": 1,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 194,
+    "section_name": "BSCpE 3C",
+    "year_level": 3,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 168,
+    "section_name": "BSCpE 3C",
+    "year_level": 3,
+    "semester": 1,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 195,
+    "section_name": "BSCpE 3D",
+    "year_level": 3,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 196,
+    "section_name": "BSCpE 3E",
+    "year_level": 3,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 10,
+    "section_name": "BSCpE 4A",
+    "year_level": 4,
+    "semester": 1,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 197,
+    "section_name": "BSCpE 4A",
+    "year_level": 4,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 198,
+    "section_name": "BSCpE 4B",
+    "year_level": 4,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 11,
+    "section_name": "BSCpE 4B",
+    "year_level": 4,
+    "semester": 1,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 199,
+    "section_name": "BSCpE 4C",
+    "year_level": 4,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 12,
+    "section_name": "BSCpE 4C",
+    "year_level": 4,
+    "semester": 1,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 200,
+    "section_name": "BSCpE 4D",
+    "year_level": 4,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 201,
+    "section_name": "BSCpE 4E",
+    "year_level": 4,
+    "semester": 1,
+    "academic_year": "26-27",
+    "student_count": 40
+  },
+  {
+    "id": 15,
+    "section_name": "BSCpE 1A",
+    "year_level": 1,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 16,
+    "section_name": "BSCpE 1B",
+    "year_level": 1,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 140,
+    "section_name": "BSCpE 1C",
+    "year_level": 1,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 17,
+    "section_name": "BSCpE 2A",
+    "year_level": 2,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 18,
+    "section_name": "BSCpE 2B",
+    "year_level": 2,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 143,
+    "section_name": "BSCpE 2C",
+    "year_level": 2,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 19,
+    "section_name": "BSCpE 3A",
+    "year_level": 3,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 20,
+    "section_name": "BSCpE 3B",
+    "year_level": 3,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 21,
+    "section_name": "BSCpE 3C",
+    "year_level": 3,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 22,
+    "section_name": "BSCpE 3D",
+    "year_level": 3,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 23,
+    "section_name": "BSCpE 3E",
+    "year_level": 3,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 24,
+    "section_name": "BSCpE 4A",
+    "year_level": 4,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 25,
+    "section_name": "BSCpE 4B",
+    "year_level": 4,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 26,
+    "section_name": "BSCpE 4C",
+    "year_level": 4,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 27,
+    "section_name": "BSCpE 4D",
+    "year_level": 4,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  },
+  {
+    "id": 28,
+    "section_name": "BSCpE 4E",
+    "year_level": 4,
+    "semester": 2,
+    "academic_year": "25-26",
+    "student_count": 40
+  }
+]
